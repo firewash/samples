@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bbbbtn</title>
+    <link href="//g.alicdn.com/kissy/k/1.4.7/css/dpl/base.css" rel="stylesheet"/>
+    <link href="common.css" rel="stylesheet"/>
+    <link href="custombutton.css" rel="stylesheet"/>
+    <script src="//g.alicdn.com/kissy/k/1.4.7/seed.js" data-config="{combine:false}"></script>
+
+</head>
+<body>
+<div id="button_container"></div>
+
+<div id="test8" class="box">
+
+    <div style="width:500px;">
+        1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,
+        6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,
+        3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,
+        0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,
+        6,7,8,9,0,1,2,3,4,5
+        ,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,
+        3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,
+    </div>
+
+</div>
+<script>
+
+        KISSY.use('button', function(S, Button){
+            var b = new Button({
+                content: "我是类Google按钮1",
+                render: "#button_container",
+                tooltip: "点击我有惊喜~"
+            });
+            b.render();
+        });
+
+        KISSY.use("anim,button", function(S, Anim, Button) {
+            var b = new Button({
+                content: "run scroll animation"
+            });
+            b.render();
+            b.on("click", function() {
+                b.set("disabled", true);
+                Anim(S.get("#test8"), {
+                            //设置 scrollLeft 或者 scrollTop 属性
+                            scrollLeft:500
+                        }, 5, undefined,
+                        function() {
+                            Anim(S.get("#test8"), {
+                                        scrollLeft:0
+                                    }, 5, undefined,
+                                    function() {
+                                        b.set("disabled", false);
+                                    }).run();
+                        }).run();
+            });
+        });
+
+
+
+</script>
+
+</body>
+</html>

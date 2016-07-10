@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+
+    function Life(){
+        this.flag = 'shengwu';
+    }
+
+    function Animal(){
+        this.name = 'name';
+    }
+
+    Animal.prototype = new Life();
+
+
+    function outer(){
+        var myobj = new Object;
+        myobj.value=0;
+        return function add(b){
+            myobj.value += b;
+            return myobj.value;
+        }
+    }
+
+    var add = outer();
+
+    console.log(add(5));
+    console.log(add(3));
+
+    document.body.add = add;
+
+    var myanimal = new Animal() ;
+    document.body.ani = myanimal;
+
+    setTimeout(function(){
+        var myanimal2 = new Animal() ;
+        document.body.ani2 = myanimal2;
+    },2000)
+
+
+</script>
+
+</body>
+</html>
