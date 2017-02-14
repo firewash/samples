@@ -34,11 +34,17 @@
                 //平移
                 clean(gl);
                 var Tx = Math.random(),Ty = Math.random(),Tz = 0.0;
-                var u_Translation = gl.getUniformLocation(shaderProgram,'u_Translation');
-                gl.uniform4f(u_Translation,Tx,Ty,Tz,0.0);
+                var matrix = new Float32Array([
+                    1.0, 0.0, 0.0, 0.0,
+                    0.0, 1.0, 0.0, 0.0,
+                    0.0, 0.0, 1.0, 0.0,
+                    Tx, Ty, Tz, 1.0
+                ]);
+
+                var xformMatrix  = gl.getUniformLocation(shaderProgram,'xformMatrix');
+                gl.uniformMatrix4fv(xformMatrix,false, matrix);
                 gl.drawArrays(gl.TRIANGLES, 0, 3);
             }, 1000);
-
 
             debugger;
         }
@@ -47,10 +53,10 @@
     <!--只相当于一个转换函数-->
     <script id="shader-vs" type="x-shader/x-vertex">
         attribute vec4 a_Position;
-        uniform vec4 u_Translation;
+        uniform mat4 xformMatrix ;
         void main(void)
         {
-            gl_Position = a_Position + u_Translation;
+            gl_Position = xformMatrix * a_Position;
         }
         </script>
 
