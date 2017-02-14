@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+    </style>
+    <script src="webgl-debug-tools.js"></script>
+    <script>
+        'use strict';
+        window.onload = function(){
+            var gl = getWebGLContext('mycanvas');
+            var shaders = createShaders(gl, 'shader-vs', 'shader-fs');
+            var shaderProgram = shaders.shaderProgram;
+
+            // 传递数据
+            var vertices = new Float32Array([
+                0.0, 0.0,
+                -0.5, -0.5,
+                1, -0.5
+            ]);
+            var vertex_buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+            // 开始画
+            var a_Position = gl.getAttribLocation(shaderProgram, 'a_Position');
+            gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+            gl.enableVertexAttribArray(a_Position);
+            gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+            debugger;
+        }
+
+    </script>
+    <!--只相当于一个转换函数-->
+    <script id="shader-vs" type="x-shader/x-vertex">
+        attribute vec4 a_Position;
+
+        void main(void)
+        {
+            gl_Position = a_Position;
+        }
+        </script>
+
+    <script id="shader-fs" type="x-shader/x-fragment">
+        void main(void)
+        {
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1);
+        }
+        </script>
+</head>
+<body>
+<canvas id="mycanvas" style="width:300px;height:300px;border:1px solid black;"></canvas>
+
+</body>
+</html>
