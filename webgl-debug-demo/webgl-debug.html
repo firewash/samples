@@ -18,7 +18,7 @@
             var vertices = new Float32Array([
                 0.0, 0.0,
                 -0.5, -0.5,
-                1, -0.5
+                0.8, -0.5
             ]);
             var vertex_buffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
@@ -30,6 +30,16 @@
             gl.enableVertexAttribArray(a_Position);
             gl.drawArrays(gl.TRIANGLES, 0, 3);
 
+            setInterval(function(){
+                //平移
+                clean(gl);
+                var Tx = Math.random(),Ty = Math.random(),Tz = 0.0;
+                var u_Translation = gl.getUniformLocation(shaderProgram,'u_Translation');
+                gl.uniform4f(u_Translation,Tx,Ty,Tz,0.0);
+                gl.drawArrays(gl.TRIANGLES, 0, 3);
+            }, 1000);
+
+
             debugger;
         }
 
@@ -37,10 +47,10 @@
     <!--只相当于一个转换函数-->
     <script id="shader-vs" type="x-shader/x-vertex">
         attribute vec4 a_Position;
-
+        uniform vec4 u_Translation;
         void main(void)
         {
-            gl_Position = a_Position;
+            gl_Position = a_Position + u_Translation;
         }
         </script>
 
@@ -52,7 +62,7 @@
         </script>
 </head>
 <body>
-<canvas id="mycanvas" style="width:300px;height:300px;border:1px solid black;"></canvas>
+<canvas id="mycanvas" style="width:300px;height:300px;border:1px solid black;" width="300" height="300"></canvas>
 
 </body>
 </html>

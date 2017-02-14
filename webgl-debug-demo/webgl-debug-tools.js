@@ -58,5 +58,9 @@ function createShaders(gl, vertextShaderScript, fragmentShaderScript) {
         vertexShader,
         fragmentShader,
         shaderProgram
-    }
+    };
+}
+
+function clean(gl) {
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 }
