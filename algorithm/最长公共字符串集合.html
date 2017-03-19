@@ -1,165 +1,177 @@
 <body></body>
 <script>
-  function LongestCommonSubstringSets(word1, word2) {
-    var FragSets = [];
-    var lcsarr = new Array(word1.length);
-    
-    function Frag(obj){
-      var instance = null;
-      if(obj.isCommon){
-        instance = {
-          start1: obj.start1, 
-          start2: obj.start2,
-          length: obj.length,
-          content: obj.content,
-          isCommon: true,
-          isMax: obj.isMax,
-          leftFrag: obj.leftFrag,
-          rightFrag:obj.rightFrag
-        }
-      }else{
-        instance = {
-          start1: obj.start1, 
-          start2: obj.start2,
-          end1: obj.end1,
-          end2: obj.end2,
-          isCommon: false,
-          content1: object.content1,
-          content2: object.content2
-        };
-      }
-    }
+    function LongestCommonSubstringSets(word1, word2) {
+        var FragSets = [];
+        var lcsarr = new Array(word1.length);
 
-    function getLeftTop(i,j){
-      return (lcsarr[i - 1] && lcsarr[i - 1][j-1]) ? lcsarr[i - 1][j-1] : 0;
-    }
-
-    function getSubStrContent(startIndex, endIndex, str){ //包括start，但是不包括end
-      return str.substring(startIndex,endIndex);
-    }
-
-    function makeArrayAndFindRootMax(){
-      var max = 0;
-      let char1 = null;
-      let char2 = null;
-      var indexInWord1 = 0;
-      var indexInWord2 = 0;
-
-      for (var i = 0; i < word1.length; i++) {
-        lcsarr[i] = new Array(word2.length);
-        for (var j = 0; j <= word2.length; j++) {
-          lcsarr[i][j] = 0;
-        }
-      }
-      console.log('init');
-      console.table(lcsarr);
-      
-      for (var i = 0; i < word1.length; ++i) {
-        for (var j = 0; j < word2.length; ++j) {
-            char1 = word1[i];
-            char2 = word2[j];
-            if (char1 == char2) {
-              lcsarr[i][j] = getLeftTop(i,j) + 1;
+        function Frag(obj) {
+            var instance = null;
+            if (obj.isCommon) {
+                instance = {
+                    start1: obj.start1,
+                    start2: obj.start2,
+                    length: obj.length,
+                    content: getSubStrContentByLength(obj.start1, obj.length, word1), // for debug only
+                    isCommon: true,
+                    isMax: obj.isMax,
+                    leftFrag: obj.leftFrag,
+                    rightFrag: obj.rightFrag
+                }
             } else {
-              lcsarr[i][j] = 0;
+                instance = {
+                    start1: obj.start1,
+                    start2: obj.start2,
+                    end1: obj.end1,
+                    end2: obj.end2,
+                    isCommon: false,
+                    content1: getSubStrContentByIndex(obj.start1, obj.end1, word1), // for debug only,
+                    content2: getSubStrContentByIndex(obj.start2, obj.end2, word2), // for debug only
+                };
             }
-          
-          console.log('i,j:',i,j);
-          console.table(lcsarr);
-          if (max < lcsarr[i][j]) {
-            max = lcsarr[i][j];
-            indexInWord1 = i;
-            indexInWord2 =j;
-          }
+            return instance;
         }
-      }
-      var str = "";
-      if (max > 0) {
-        for (var start = indexInWord1-max+1, i = 0; i < max; ++i) {
-          str += word1[start+i];
-        }
-      }
-      console.log(str);
-      var root = Frag({
-        start1: indexInWord1-max+1,
-        start2: indexInWord2-max+1,
-        length: max,
-        isCommon:true,
-        isMax:true
-      });
 
-      root.left = Frag({
-        start1: 0,
-        end1: indexInWord1-max,
-        content1: word1.substring(start1,indexInWord1-max) ,
-        start2: 0,
-        end2:indexInWord2-max+1,
-        content2: word2.substring(start2,indexInWord2-max) ,
-        length: max,
-        isCommon:true,
-        isMax:true
-      });
-      root.right = Frag({
-        
-      });
-      return root;
+        function getLeftTop(i, j) {
+            return (lcsarr[i - 1] && lcsarr[i - 1][j - 1]) ? lcsarr[i - 1][j - 1] : 0;
+        }
+
+        function getSubStrContentByIndex(startIndex, endIndex, str) { //起始字符，结束字符
+            return str.substring(startIndex, endIndex + 1);
+        }
+
+        function getSubStrContentByLength(startIndex, length, str) { //起始字符，结束字符
+            return str.substr(startIndex, length);
+        }
+
+        //进行初步计算，得出结果数组，和最大根节点
+        function makeArrayAndFindRootMax() {
+            var max = 0;
+            let char1 = null;
+            let char2 = null;
+            var indexInWord1 = 0;
+            var indexInWord2 = 0;
+
+            for (var i = 0; i < word1.length; i++) {
+                lcsarr[i] = new Array(word2.length);
+                for (var j = 0; j <= word2.length; j++) {
+                    lcsarr[i][j] = 0;
+                }
+            }
+            console.log('init');
+            console.table(lcsarr);
+
+            for (var i = 0; i < word1.length; ++i) {
+                for (var j = 0; j < word2.length; ++j) {
+                    char1 = word1[i];
+                    char2 = word2[j];
+                    if (char1 == char2) {
+                        lcsarr[i][j] = getLeftTop(i, j) + 1;
+                    } else {
+                        lcsarr[i][j] = 0;
+                    }
+
+                    console.log('i,j:', i, j);
+                    console.table(lcsarr);
+                    if (max < lcsarr[i][j]) {
+                        max = lcsarr[i][j];
+                        indexInWord1 = i;
+                        indexInWord2 = j;
+                    }
+                }
+            }
+            var str = "";
+            if (max > 0) {
+                for (var start = indexInWord1 - max + 1, i = 0; i < max; ++i) {
+                    str += word1[start + i];
+                }
+            }
+            console.log(str);
+            var root = Frag({
+                start1: indexInWord1 - max + 1,
+                start2: indexInWord2 - max + 1,
+                length: max,
+                isCommon: true,
+                isMax: true
+            });
+
+//      root.left = Frag({
+//        start1: 0,
+//        end1: indexInWord1-max,
+//        content1: word1.substring(start1,indexInWord1-max) ,
+//        start2: 0,
+//        end2:indexInWord2-max+1,
+//        content2: word2.substring(start2,indexInWord2-max) ,
+//        length: max,
+//        isCommon:true,
+//        isMax:true
+//      });
+//      root.right = Frag({
+//
+//      });
+            return root;
+        }
+
+        //将比较结果的数组，转换成节点（包含两个字符串对比结果）的树. 递归
+        var hasFindMax = false;
+        function makeMaxFragTree(StartIndex_word1, endIndex_word1, startIndex_word2, endIndex_word2) {
+            var max = 0;
+            var fragEndIndexInWord1 = null;
+            var fragEndIndexInWord2 = null;
+            let char1 = null;
+            let char2 = null;
+            for (var i = StartIndex_word1; i <= endIndex_word1; i++) {
+                for (var j = startIndex_word2; j <= endIndex_word2; j++) {
+                    var value = lcsarr[i][j];
+                    char1 = word1[i];
+                    char2 = word1[j];
+                    if (value > max) {
+                        max = lcsarr[i][j];
+                        fragEndIndexInWord1 = i;
+                        fragEndIndexInWord2 = j;
+                    }
+                }
+            }
+            var commonFrag = Frag({
+                start1: fragEndIndexInWord1-max+1,
+                start2: fragEndIndexInWord2-max+1,
+                length: max,
+                isMax: hasFindMax?true:(hasFindMax=true,false),
+                isCommon: true
+            });
+
+            if (fragEndIndexInWord1 > StartIndex_word1 && fragEndIndexInWord2 > startIndex_word2) {
+                commonFrag.leftFrag = makeMaxFragTree(StartIndex_word1, fragEndIndexInWord1 - 1, startIndex_word2, fragEndIndexInWord2 - 1);
+            } else {
+                commonFrag.leftFrag = Frag({
+                    start1: StartIndex_word1,
+                    end1: fragEndIndexInWord1 - 1,
+                    start2: startIndex_word2,
+                    end2: fragEndIndexInWord2 - 1
+                });
+            }
+            if (fragEndIndexInWord1 + 1 < endIndex_word1 && fragEndIndexInWord2 + 1 < endIndex_word2) {
+                commonFrag.rightFrag = makeMaxFragTree(fragEndIndexInWord1 + 1, endIndex_word1, fragEndIndexInWord2 + 1, endIndex_word2);
+            } else {
+                commonFrag.rightFrag = Frag({
+                    start1: fragEndIndexInWord1 + 1,
+                    end1: endIndex_word1,
+                    start2: fragEndIndexInWord2 + 1,
+                    end2: endIndex_word2
+                });
+            }
+
+            return commonFrag;
+
+        }
+
+        //start
+        makeArrayAndFindRootMax();
+        var tree = makeMaxFragTree(0, word1.length - 1, 0, word2.length - 1);
+        return tree;
     }
 
-    var maxFrag = makeArrayAndFindRootMax();
 
-    //将比较结果的数组，转换成节点（包含两个字符串对比结果）的树
-    function makeMaxFragTree(Startx_word1,endX_word1,startY_word1,endX_word2){
-        var max = 0;
-        var pointer1 = null;
-        var pointer2 = null;
-        for(var i=Startx_word1; i<=endX_word1; i++){
-          for(var j=Startx_word2; j<=endX_word1; j++){
-            if(lcsarr[i,j]>max){
-              max = lcsarr[i,j];
-              pointer1 = i;
-              pointer2 = j;
-            }
-          }
-        }
-        
-        var commonFrag = Frag({
-          start1: pointer1,
-          start2: pointer2,
-          length:max,
-          isCommon:true
-        });
-
-        if(pointer1>Startx_word1 && pointer2>Startx_word2){
-          commonFrag.leftFrag = makeMaxFragTree(Startx_word1,pointer1-1,Startx_word2,pointer2-1);
-        }else{
-          commonFrag.leftFrag = Frag({
-            start1:Startx_word1,
-            end1: pointer1-1,
-            start2: Startx_word2,
-            end2: pointer2-1
-          });
-        }
-        if(pointer1+1 < endX_word1 && pointer2+1 < endX_word2 ) {
-          commonFrag.rightFrag = makeMaxFragTree(pointer1+1,endX_word1,pointer2+1,endX_word2);
-        }else{
-          commonFrag.rightFrag = Frag({
-            start1:pointer1+1,
-            end1: endX_word1,
-            start2: pointer2+1,
-            end2: endX_word2
-          });
-        }
-
-        return commonFrag;
-        
-    }
-    
-    //start
-    var tree = makeMaxFragTree(0, word1.length-1, 0, word2.length-1);
-    return tree;
-  }
-
-  
-  LongestCommonSubstringSets('abcde','1a2cd3e');
+    var fragTree = LongestCommonSubstringSets('abcde', '1a2cd3e');
+    console.log(fragTree);
 
 </script>
