@@ -3,13 +3,26 @@
   function specialPrint(arr){
     var temp = ['['];
     arr.forEach(function(item){
-      temp = temp.concat(['{',item.content?item.content:(item.content1+','+item.content2),'} '])
+      temp = temp.concat(['{',item.content?item.content:(item.content1+','+item.content2),'}'])
     });
     temp.push(']');
-    console.log(temp.join(''));
+    var result = temp.join('');
+    console.info(result);
+    return result;
+  }
+  function assert(expect, result) {
+    if(result === expect) {
+      console.info(result);
+    }else{
+      console.error('expect: ',expect, '\r but get: ', result);
+    }
+  }
+  function specialAssert(expect, resultArr){
+    assert(expect, specialPrint(resultArr));
   }
 
     function LongestCommonSubstringSets(word1, word2) {
+        console.info('### ',word1, word2);
         var FragSets = [];
         var lcsarr = new Array(word1.length);
 
@@ -94,7 +107,7 @@
                     str += word1[start + i];
                 }
             }
-            console.log(str);
+            //console.log(str);
             var root = Frag({
                 start1: indexInWord1 - max + 1,
                 start2: indexInWord2 - max + 1,
@@ -153,29 +166,33 @@
               });
               return FragIns;
             }
-
+            
+            var start1 = fragEndIndexInWord1-max+1,
+                start2 = fragEndIndexInWord2-max+1;
             FragIns = Frag({
-                  start1: fragEndIndexInWord1-max+1,
-                  start2: fragEndIndexInWord2-max+1,
+                  start1: start1,
+                  end1: fragEndIndexInWord1,
+                  start2: start2,
+                  end2: fragEndIndexInWord2,
                   length: max,
                   isMax: hasFindMax?true:(hasFindMax=true,false),
                   isCommon: true
               });
             
 
-            if (fragEndIndexInWord1 > StartIndex_word1 && fragEndIndexInWord2 > startIndex_word2) { //两个字符串的左边均还有字符串
-                FragIns.leftFrag = makeMaxFragTree(StartIndex_word1, fragEndIndexInWord1 - 1, startIndex_word2, fragEndIndexInWord2 - 1);
-            } else if(fragEndIndexInWord1 <= StartIndex_word1 && fragEndIndexInWord2 <= startIndex_word2) { // 两个字符串左边均无字符串
+            if (start1 > StartIndex_word1 && start2 > startIndex_word2) { //两个字符串的左边均还有字符串
+                FragIns.leftFrag = makeMaxFragTree(StartIndex_word1, start1-1, startIndex_word2, start2 - 1);
+            } else if(start1 <= StartIndex_word1 && start2 <= startIndex_word2) { // 两个字符串左边均无字符串
                 null;
             } else { //两个字符串的左边还有一个有
                 FragIns.leftFrag = Frag({
                     start1: StartIndex_word1,
-                    end1: fragEndIndexInWord1 - 1,
+                    end1: start1-1,
                     start2: startIndex_word2,
-                    end2: fragEndIndexInWord2 - 1
+                    end2: start2 - 1
                 });
             }
-            if (fragEndIndexInWord1 + 1 < endIndex_word1 && fragEndIndexInWord2 + 1 < endIndex_word2) { // 此处有问题
+            if (fragEndIndexInWord1 < endIndex_word1 && fragEndIndexInWord2 < endIndex_word2) { // 此处有问题
                 FragIns.rightFrag = makeMaxFragTree(fragEndIndexInWord1 + 1, endIndex_word1, fragEndIndexInWord2 + 1, endIndex_word2);
             } else if (fragEndIndexInWord1 >= endIndex_word1 && fragEndIndexInWord2 >= endIndex_word2){
                 null;
@@ -214,25 +231,50 @@
         return arr;
     }
 
-    //test case 
+    /**
+      * test case
+    */ 
     
-    //[{1,null},{a},{b,2},{cd},{null,3},{e}]
-    // var test1 = LongestCommonSubstringSets('abcde', '1a2cd3e');
-    // console.log(test1);
+    (function(){
+      var test1 = LongestCommonSubstringSets('春分好天气', '春分天气真好');
+      specialAssert('[{春分}{好,}{天气}{,真好}]', test1);
+    })();
     
-    // //[ {a} ]
-    // var test2 = LongestCommonSubstringSets('a', 'a');
-    // console.log(test2);
+   
+    (function(){
+      // //[ {a} ]
+      var test = LongestCommonSubstringSets('春', '春');
+      specialAssert('[{春}]',test);
+    })();
 
-    //[ {a},{b,null} ]
-    //var test3 = LongestCommonSubstringSets('ab', 'a');
-    //console.log(test3);
+    (function(){
+      // //[ {a} ]
+      var test = LongestCommonSubstringSets('春分', '春分');
+      specialAssert('[{春分}]',test);
+    })();
 
-    //[{ab,cd} ]
-    // var test4 = LongestCommonSubstringSets('ab', 'cd');
-    // specialPrint(test4);
+   
+    (function(){ return ;
+      //[ {a},{b,null} ]
+      var test3 = LongestCommonSubstringSets('ab', 'a');
+      specialPrint(test3);
+    })();
 
+    
+    (function(){
+      //[{ab,cd} ]
+      var test4 = LongestCommonSubstringSets('ab', 'cd');
+      specialPrint(test4);
+    })();
 
-    var test5 = LongestCommonSubstringSets('今天是春分', '据说春分可立鸡蛋');
-    specialPrint(test5);
+    (function(){
+      var test5 = LongestCommonSubstringSets('今天是春分', '据说春分可立鸡蛋');
+      specialPrint(test5);
+    })();
+
+    (function(){
+      var test5 = LongestCommonSubstringSets('清明时节雨纷纷', '清时纷');
+      specialAssert('[{清}{明,}{时}{节雨,}{纷}{纷,}]', test5);
+    })();
+    
 </script>
