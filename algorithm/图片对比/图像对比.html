@@ -1,0 +1,20 @@
+<img id='img1' src="./3px-4px-red.png"/>
+<img id='img2' src="./3px-4px-redblue.png"/>
+<script>
+  function getImageInfomation(img){
+    img = (img.nodeName === 'IMG') ? img : document.getElementById(img);
+    var canvas = document.createElement('canvas');
+    var width = img.width, height=img.height;
+    canvas.width = width;
+    canvas.heigh = height;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img,0,0,width,height);
+    return ctx.getImageData(0, 0, width, height); 
+  }
+
+  window.onload = function(e){
+    var info1 = getImageInfomation('img1');
+    console.log(info1);
+  }
+
+</script>
