@@ -1,3 +1,4 @@
+<meta http-equiv="content-type" content="text/html;charset=utf-8">
 <body></body>
 <script src='utils.js'></script>
 <script src='getCommonSubstringSets.js'></script>
@@ -40,11 +41,18 @@
     });
 
     description('有一些参差的相同', function(){
-      var test5 = getCommonSubstringSets('今天是春分', '据说春分可立鸡蛋');
-      specialAssert('[{今天是,据说}{春分}{,可立鸡蛋}]',test5);
-      var test5 = getCommonSubstringSets('清明时节雨纷纷', '清时纷');
-      specialAssert('[{清}{明,}{时}{节雨,}{纷}{纷,}]', test5);
-      var test1 = getCommonSubstringSets('春分好天气', '春分天气真好');
-      specialAssert('[{春分}{好,}{天气}{,真好}]', test1);
+        var test5 = getCommonSubstringSets('今天是春分', '据说春分可立鸡蛋');
+        specialAssert('[{今天是,据说}{春分}{,可立鸡蛋}]',test5);
+        var test5 = getCommonSubstringSets('清明时节雨纷纷', '清时纷');
+        specialAssert('[{清}{明,}{时}{节雨,}{纷}{纷,}]', test5);
+        var test1 = getCommonSubstringSets('春分好天气', '春分天气真好');
+        specialAssert('[{春分}{好,}{天气}{,真好}]', test1);
+    });
+
+    description('也适合数组类型', function(){
+        var test = getCommonSubstringSets(['春'], ['春','分']);
+        specialAssert('[{春}{,分}]',test);
+        var test = getCommonSubstringSets([2], [1,2,3]);
+        specialAssert('[{,1}{2}{,3}]',test);
     });
 </script>

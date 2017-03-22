@@ -1,7 +1,10 @@
+<meta charset="utf-8">
+<script src="../getCommonSubstringSets.js"></script>
+<script src="imageCompare.js"></script>
 <img id='img1' src="./3px-4px-red.png"/>
 <img id='img2' src="./3px-4px-redblue.png"/>
 <script>
-  function getImageInfomation(img){
+  function getImageData(img){
     img = (img.nodeName === 'IMG') ? img : document.getElementById(img);
     var canvas = document.createElement('canvas');
     var width = img.width, height=img.height;
@@ -13,8 +16,10 @@
   }
 
   window.onload = function(e){
-    var info1 = getImageInfomation('img1');
-    console.log(info1);
+    var info1 = getImageData('img1');
+    var info2 = getImageData('img2');
+    var result = imageCompare(info1,info2);
+    console.log(result);
   }
 
 </script>

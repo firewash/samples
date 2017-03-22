@@ -1,7 +1,7 @@
 function getCommonSubstringSets(word1, word2) {
   console.log('call getCommonSubstringSet: ', word1, word2);
   var FragSets = [];
-  var lcsarr = new Array(word1.length);
+  var lcsarr = new Array(word1.length); // Array[word1.length][word2.length]
 
   function Frag(obj) {
       var instance = null;
@@ -19,16 +19,18 @@ function getCommonSubstringSets(word1, word2) {
           }
       } else {
           instance = {
-              start1: obj.start1,
-              start2: obj.start2,
-              end1: obj.end1,
-              end2: obj.end2,
-              isCommon: false,
-              content1: getSubStrContentByIndex(obj.start1, obj.end1, word1),
-              // for debug only,
-              content2: getSubStrContentByIndex(obj.start2, obj.end2, word2),
-              // for debug only
+              isCommon: false
           };
+          if(obj.start1 <= obj.end1) {
+              instance.start1 = obj.start1;
+              instance.end1 = obj.end1;
+              instance.content1 = getSubStrContentByIndex(obj.start1, obj.end1, word1);  // for debug only,
+          }
+          if(obj.start2 <= obj.end2) {
+              instance.start2 = obj.start2;
+              instance.end2 = obj.end2;
+              instance.content2 = getSubStrContentByIndex(obj.start2, obj.end2, word2);
+          }
       }
       return instance;
   }
@@ -37,14 +39,22 @@ function getCommonSubstringSets(word1, word2) {
       return (lcsarr[i - 1] && lcsarr[i - 1][j - 1]) ? lcsarr[i - 1][j - 1] : 0;
   }
 
-  function getSubStrContentByIndex(startIndex, endIndex, str) {
+  function getSubStrContentByIndex(startIndex, endIndex, str) { //兼容字符串和数组
       //起始字符，结束字符
-      return str.substring(startIndex, endIndex + 1);
+      if(str.constructor.name === 'String'){
+          return str.substring(startIndex, endIndex + 1);
+      }else if(str.constructor.name === 'Array'){
+          return str.slice(startIndex, endIndex + 1);
+      }
   }
 
   function getSubStrContentByLength(startIndex, length, str) {
       //起始字符，结束字符
-      return str.substr(startIndex, length);
+      if(str.constructor.name === 'String'){
+          return str.substr(startIndex, length);
+      }else if(str.constructor.name === 'Array'){
+          return str.slice(startIndex, startIndex+length);
+      }
   }
 
   //进行初步计算，得出结果数组，和最大根节点
@@ -74,8 +84,8 @@ function getCommonSubstringSets(word1, word2) {
                   lcsarr[i][j] = 0;
               }
 
-              console.log('i,j:', i, j);
-              console.table(lcsarr);
+              //console.log('i,j:', i, j);
+              // console.table(lcsarr);
               if (max < lcsarr[i][j]) {
                   max = lcsarr[i][j];
                   indexInWord1 = i;
@@ -83,6 +93,7 @@ function getCommonSubstringSets(word1, word2) {
               }
           }
       }
+      console.table(lcsarr);
       var str = "";
       if (max > 0) {
           for (var start = indexInWord1 - max + 1, i = 0; i < max; ++i) {
@@ -115,7 +126,7 @@ function getCommonSubstringSets(word1, word2) {
       return root;
   }
 
-  //将比较结果的数组，转换成节点（包含两个字符串对比结果）的树. 递归
+  //从比较结果数组中，提起公共节点（包含两个字符串对比结果）的树. 递归
   var hasFindMax = false;
   function makeMaxFragTree(StartIndex_word1, endIndex_word1, startIndex_word2, endIndex_word2) {
       var max = -1;
